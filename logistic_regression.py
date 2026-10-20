@@ -1,3 +1,45 @@
 import numpy as np
 from variable_class import Variable
 
+class LogisticRegression:
+    def __init__(self, learning_rate=0.1, iterations=1000):
+        self.learning_rate = learning_rate # how large each gradient descent update should be
+        self.iterations = iterations # how many times we update the parameters during training
+        self.b = None # Creates a placeholder for the bias b
+        self.w = None # Creates a placeholder for the weights w
+
+    def fit(self, X, y):
+        # X contains the input features
+        # y contains the correct labels (0 or 1) 
+        n, k = X.shape # n = number of training examples; k = number of features per example
+        
+        b = Variable("b") #symbolic variable representing the bias
+
+        weights = [] 
+
+        # need one weight for every feature
+        # will create a list of the weight variables (e.g. "w_0" and "w_1")
+        for j in range(k):
+            weights.append(Variable("w_" + str(j)))
+
+        values = {"b": 0.0} # dictionary containing the value of the variables (b, w_0, w_1,...)
+
+        # add all the weights and their initial value into the dictionary 
+        for j in range(k):
+            values["w_" + str(j)] = 0.0
+
+        # i is the index of a training example
+        for i in range(n):
+            z = b
+            for j in range(k):
+                # weights[j] is the symbolic weight for feature j
+                # X[i, j] is the numerical value of feature j for training example i
+                z = z + weights[j] * X[i, j] 
+                p = 1 / (1 + Variable.exp(-z)) 
+
+
+
+
+
+
+model = LogisticRegression() 
