@@ -13,6 +13,7 @@ class LogisticRegression:
         # y contains the correct labels (0 or 1) 
         n, k = X.shape # n = number of training examples; k = number of features per example
         
+        # Create variables for the bias and weights
         b = Variable("b") #symbolic variable representing the bias
 
         weights = [] 
@@ -22,20 +23,41 @@ class LogisticRegression:
         for j in range(k):
             weights.append(Variable("w_" + str(j)))
 
+        # Initialize all parameter values to zero
         values = {"b": 0.0} # dictionary containing the value of the variables (b, w_0, w_1,...)
 
         # add all the weights and their initial value into the dictionary 
         for j in range(k):
             values["w_" + str(j)] = 0.0
 
-        # i is the index of a training example
+        # Start building the total loss expression
+        cost = 0
+
+        # Loop through each training example
         for i in range(n):
+            # Build z = b + w0*x0 + w1*x1 + ...
             z = b
             for j in range(k):
                 # weights[j] is the symbolic weight for feature j
                 # X[i, j] is the numerical value of feature j for training example i
-                z = z + weights[j] * X[i, j] 
-                p = 1 / (1 + Variable.exp(-z)) 
+                z = z + weights[j] * X[i, j]
+
+            # Apply sigmoid to get the predicted probability
+            # logistic regression needs to convert z into a probability between 0 and 1 
+            p = 1 / (1 + Variable.exp(-z))
+
+            # Calculate cross-entropy loss for this example
+            loss = -(y[i] * Variable.log(p)
+                    + (1 - y[i]) * Variable.log(1 - p))
+
+            # Add this example's loss to the total
+            cost = cost + loss
+
+        # Divide by the number of examples to get average loss
+        cost = cost / n
+
+
+                
 
 
 
