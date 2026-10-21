@@ -18,6 +18,7 @@ np.random.seed(0)
 # Generate 50 examples with one feature between 0 and 4
 X = np.random.uniform(0, 4, size=(50, 1))
 # Assign labels based on whether the feature is approximately above 2
+# Add random noise with np.random.normal so that it is not perfectly split at 2
 y = ((X[:, 0] + np.random.normal(0, 0.5, 50)) > 2).astype(int)
 
 # Split data into training and testing sets
@@ -51,6 +52,7 @@ plt.title("Loss During Gradient Descent")
 
 # Graph the output against the data to test quality of fit
 # Create evenly spaced x-values between 0 and 4 for the probability curve
+# Learned this from: https://www.geeksforgeeks.org/python/numpy-linspace/ 
 X_plot = np.linspace(0, 4, 200).reshape(200, 1)
 
 # Calculate predicted probabilities using the learned parameters

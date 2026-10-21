@@ -50,9 +50,13 @@ class LogisticRegression:
 
             # Apply sigmoid to get the predicted probability
             # logistic regression needs to convert z into a probability between 0 and 1 
+            # Learned this from: 
+            # https://www.geeksforgeeks.org/machine-learning/understanding-logistic-regression/ 
             p = 1 / (1 + Variable.exp(-z))
 
             # Calculate cross-entropy loss for this example
+            # Learned this from: 
+            # https://www.geeksforgeeks.org/machine-learning/ml-cost-function-in-logistic-regression/ 
             loss = -(y[i] * Variable.log(p)
                     + (1 - y[i]) * Variable.log(1 - p))
 
@@ -88,6 +92,7 @@ class LogisticRegression:
 
     # use the learned weights and bias to make predictions
     def predict(self, X):
+        # learned this from: https://numpy.org/doc/stable/reference/generated/numpy.matmul.html 
         z = X @ self.w + self.b # @ is the numpy matrix multiplier 
 
         # apply Sigmoid function to convert the weighted sums into probabilities between 0 and 1
