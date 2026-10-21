@@ -180,4 +180,4 @@ This model can be used for binary classification tasks where input features are 
 - [Scikit-learn: Linear Models User Guide](https://scikit-learn.org/stable/modules/linear_model.html)
 - [Scikit-learn: LogisticRegression API Reference](https://scikit-learn.org/stable/modules/generated/sklearn.linear_model.LogisticRegression.html)
 - [Scikit-learn GitHub README](https://github.com/scikit-learn/scikit-learn/blob/main/README.rst)
-- [Make a README](https://www.makeareadme.com/)
+- [Make a README](https://www.makeareadme.com/)git
