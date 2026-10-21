@@ -1,3 +1,9 @@
+# Name: Ava Cai
+# Date: 10/21/26
+# Assignment: Project 2
+# Purpose of the program: Variable Class Testing
+# AI DECLARATION: AI was not used in the creation of this program.
+
 from variable_class import Variable, Constant
 
 # Values to plug into every expression below

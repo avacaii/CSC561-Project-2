@@ -1,3 +1,9 @@
+# Name: Ava Cai
+# Date: 10/21/26
+# Assignment: Project 2
+# Purpose of the program: Logistic Regression Class
+# AI DECLARATION: AI was not used in the creation of this program.
+
 import numpy as np
 from variable_class import Variable
 
@@ -56,12 +62,33 @@ class LogisticRegression:
         # Divide by the number of examples to get average loss
         cost = cost / n
 
+        for iteration in range(self.iterations):
+            # Calling cost.grad(values) recursively calculates the partial derivative 
+            # of the cost with respect to every weight and bias
+            grads = cost.grad(values)
 
-                
+            # Update the bias using its gradient
+            values["b"] = values["b"] - self.learning_rate * grads["b"]
 
+            # Update each weight using its gradient
+            for j in range(k):
+                name = "w_" + str(j)
+                values[name] = values[name] - self.learning_rate * grads[name]
 
+        # save the final learned weights and bias as attributes of the LogisticRegression object
+        self.b = values["b"]
+        self.w = np.array([values["w_" + str(j)] for j in range(k)]) # creates a numpy array of all the weights 
 
+    # use the learned weights and bias to make predictions
+    def predict(self, X):
+        z = X @ self.w + self.b # @ is the numpy matrix multiplier 
 
+        # apply Sigmoid function to convert the weighted sums into probabilities between 0 and 1
+        # use np.exp() instead of Variable.exp() because z is now a NumPy array of numerical values
+        p = 1 / (1 + np.exp(-z))
 
-
-model = LogisticRegression() 
+        # Convert probabilities into class labels
+        # p >= 0.5 will return Boolean values, .astype(int) converts the Boolean values into integers,
+        # 1 for True, 0 for False
+        # Essentially, return 1 for probabilities >= 0.5, otherwise return 0
+        return (p >= 0.5).astype(int)

@@ -1,3 +1,9 @@
+# Name: Ava Cai
+# Date: 10/21/26
+# Assignment: Project 2
+# Purpose of the program: Variable Class
+# AI DECLARATION: AI was not used in the creation of this program.
+
 import math
 
 # each Variable object represents an independent mathematical variable
