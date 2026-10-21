@@ -62,7 +62,14 @@ class LogisticRegression:
         # Divide by the number of examples to get average loss
         cost = cost / n
 
+        # Create list to track the changes in loss
+        self.loss_history = []
+
+        # Use gradient descent to minimize the cost
         for iteration in range(self.iterations):
+            # Record the current cost before updating the parameters
+            self.loss_history.append(cost.evaluate(values))
+            
             # Calling cost.grad(values) recursively calculates the partial derivative 
             # of the cost with respect to every weight and bias
             grads = cost.grad(values)
