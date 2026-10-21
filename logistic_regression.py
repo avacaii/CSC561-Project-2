@@ -39,7 +39,9 @@ class LogisticRegression:
         # Start building the total loss expression
         cost = 0
 
-        # Loop through each training example
+        # Loop through each training example to make linear combination of input features
+        # Learned this from:
+        # https://www.geeksforgeeks.org/machine-learning/understanding-logistic-regression/
         for i in range(n):
             # Build z = b + w0*x0 + w1*x1 + ...
             z = b

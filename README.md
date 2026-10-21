@@ -142,25 +142,51 @@ A synthetic dataset of 50 examples is generated with one feature ranging from 0 
 
 This test evaluates whether the model can learn a simple binary classification relationship.
 
-**Results:** [Insert learned parameters and training/test accuracy.]
+**Results:** The data was split into 40 training examples and 10 testing examples. After 1000 iterations with a learning rate of 0.1, the model learned:
+
+| Parameter | Value |
+|---|---|
+| Weight `w_0` | 2.198 |
+| Bias `b` | -4.459 |
+| Training accuracy | 87.5% (35/40) |
+| Test accuracy | 90% (9/10) |
 
 ### Multiple-Feature Classification
 
 A separate dataset with multiple input features can be used to verify that the model correctly creates and updates one weight for each feature.
 
-**Results:** [Insert the number of features, learned weights, and accuracy.]
+**Results:** A dataset of 100 examples with 3 features (each between 0 and 4) was generated. Labels were assigned as 1 when x_0 + 2x_1 - x_2 (plus noise) > 4. The model was trained on 80 examples and tested on 20.
+
+| Parameter | Value |
+|---|---|
+| Weight `w_0` | 1.143 |
+| Weight `w_1` | 2.862 |
+| Weight `w_2` | -2.145 |
+| Bias `b` | -3.269 |
+| Training accuracy | 97.5% (78/80) |
+| Test accuracy | 95% (19/20) |
+
+The model created exactly one weight per feature, which the test verifies with `assert len(model.w) == 3`.
 
 ### Gradient Descent Convergence
 
 The average cost can be recorded across training iterations and plotted to determine whether gradient descent successfully reduces the loss.
 
-**Results:** [Insert loss graph and observations.]
+**Results:**
+
+![Loss during gradient descent](images/loss_curve.png)
+
+For the single-feature dataset, the average loss starts at around 0.7. It falls to 0.5 by iteration 100, 0.35 by iteration 500 and 0.3 by iteration 1000. The loss drops quickly at first and then levels off, which shows that gradient descent is reducing the cost. The curve is still decreasing slightly at iteration 1000, so more iterations would most likely lower the loss even more.
 
 ### Quality of Fit
 
 For a single-feature dataset, the model's predicted probability curve can be plotted against the actual labels to visually evaluate the fit.
 
-**Results:** [Insert graph and observations.]
+**Results:**
+
+![Logistic regression fit](images/logistic_fit.png)
+
+The predicted probability curve has the expected S-shape and crosses 0.5 at about x = 2, which was the classification boundary. Test examples with values about 0.6 to 1.3 are labeled 0 and fall where the predicted probability is low. Examples above about 2.5 are labeled 1 and fall where the predicted probability is high. The one point the model gets wrong where x is around 1.8, sits close to the boundary, where the model is least certain. This is expected given the noise in the labels.
 
 ## Assumptions and Limitations
 
