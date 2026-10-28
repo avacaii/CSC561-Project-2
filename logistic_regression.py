@@ -8,33 +8,45 @@ import numpy as np
 from variable_class import Variable
 
 class LogisticRegression:
-    def __init__(self, learning_rate=0.1, iterations=1000):
-        self.learning_rate = learning_rate # how large each gradient descent update should be
+    def __init__(self, learning_rate=0.1, iterations=1000, decay=0.0):
+        # a negative decay would make the learning rate grow instead of shrink
+        if decay < 0:
+            raise ValueError("decay must be non-negative")
+
+        self.learning_rate = learning_rate # how large each gradient descent update should be at the start
         self.iterations = iterations # how many times we update the parameters during training
+        self.decay = decay # how quickly the learning rate shrinks over time (0 means no decay)
         self.b = None # Creates a placeholder for the bias b
         self.w = None # Creates a placeholder for the weights w
 
-    def fit(self, X, y):
-        # X contains the input features
-        # y contains the correct labels (0 or 1) 
-        n, k = X.shape # n = number of training examples; k = number of features per example
-        
-        # Create variables for the bias and weights
+    # returns the name of the weight for feature j (e.g. "w_0", "w_1")
+    def _weight_name(self, j):
+        return "w_" + str(j)
+
+    # create the symbolic variables for the bias and weights, and set their starting values
+    def _init_parameters(self, k):
+        # k = number of features per example
         b = Variable("b") #symbolic variable representing the bias
 
-        weights = [] 
+        weights = []
 
         # need one weight for every feature
         # will create a list of the weight variables (e.g. "w_0" and "w_1")
         for j in range(k):
-            weights.append(Variable("w_" + str(j)))
+            weights.append(Variable(self._weight_name(j)))
 
         # Initialize all parameter values to zero
         values = {"b": 0.0} # dictionary containing the value of the variables (b, w_0, w_1,...)
 
-        # add all the weights and their initial value into the dictionary 
+        # add all the weights and their initial value into the dictionary
         for j in range(k):
-            values["w_" + str(j)] = 0.0
+            values[self._weight_name(j)] = 0.0
+
+        return b, weights, values
+
+    # build the symbolic expression for the average cross-entropy loss over all training examples
+    def _build_cost(self, X, y, b, weights):
+        n, k = X.shape # n = number of training examples; k = number of features per example
 
         # Start building the total loss expression
         cost = 0
@@ -51,14 +63,14 @@ class LogisticRegression:
                 z = z + weights[j] * X[i, j]
 
             # Apply sigmoid to get the predicted probability
-            # logistic regression needs to convert z into a probability between 0 and 1 
-            # Learned this from: 
-            # https://www.geeksforgeeks.org/machine-learning/understanding-logistic-regression/ 
+            # logistic regression needs to convert z into a probability between 0 and 1
+            # Learned this from:
+            # https://www.geeksforgeeks.org/machine-learning/understanding-logistic-regression/
             p = 1 / (1 + Variable.exp(-z))
 
             # Calculate cross-entropy loss for this example
-            # Learned this from: 
-            # https://www.geeksforgeeks.org/machine-learning/ml-cost-function-in-logistic-regression/ 
+            # Learned this from:
+            # https://www.geeksforgeeks.org/machine-learning/ml-cost-function-in-logistic-regression/
             loss = -(y[i] * Variable.log(p)
                     + (1 - y[i]) * Variable.log(1 - p))
 
@@ -66,31 +78,59 @@ class LogisticRegression:
             cost = cost + loss
 
         # Divide by the number of examples to get average loss
-        cost = cost / n
+        return cost / n
 
-        # Create list to track the changes in loss
+    # compute the learning rate for this iteration using time-based decay
+    # lr = learning_rate / (1 + decay * iteration)
+    # I learned this from: https://www.geeksforgeeks.org/machine-learning/learning-rate-decay/
+    def _current_learning_rate(self, iteration):
+        return self.learning_rate / (1 + self.decay * iteration)
+
+    # perform one gradient descent step on the bias and every weight
+    def _update_parameters(self, values, grads, k, lr):
+        # lr = the learning rate for this iteration
+        # Update the bias using its gradient
+        values["b"] = values["b"] - lr * grads["b"]
+
+        # Update each weight using its gradient
+        for j in range(k):
+            name = self._weight_name(j)
+            values[name] = values[name] - lr * grads[name]
+
+    def fit(self, X, y):
+        # X contains the input features
+        # y contains the correct labels (0 or 1)
+        k = X.shape[1] # k = number of features per example
+
+        # Create variables for the bias and weights, all starting at zero
+        b, weights, values = self._init_parameters(k)
+
+        # Build the total loss expression that gradient descent will minimize
+        cost = self._build_cost(X, y, b, weights)
+
+        # Create lists to track the changes in loss and learning rate
         self.loss_history = []
+        self.lr_history = []
 
         # Use gradient descent to minimize the cost
         for iteration in range(self.iterations):
             # Record the current cost before updating the parameters
             self.loss_history.append(cost.evaluate(values))
-            
-            # Calling cost.grad(values) recursively calculates the partial derivative 
+
+            # Shrink the learning rate as training goes on
+            lr = self._current_learning_rate(iteration)
+            self.lr_history.append(lr)
+
+            # Calling cost.grad(values) recursively calculates the partial derivative
             # of the cost with respect to every weight and bias
             grads = cost.grad(values)
 
-            # Update the bias using its gradient
-            values["b"] = values["b"] - self.learning_rate * grads["b"]
-
-            # Update each weight using its gradient
-            for j in range(k):
-                name = "w_" + str(j)
-                values[name] = values[name] - self.learning_rate * grads[name]
+            # move each parameter a small step in the direction that lowers the cost
+            self._update_parameters(values, grads, k, lr)
 
         # save the final learned weights and bias as attributes of the LogisticRegression object
         self.b = values["b"]
-        self.w = np.array([values["w_" + str(j)] for j in range(k)]) # creates a numpy array of all the weights 
+        self.w = np.array([values[self._weight_name(j)] for j in range(k)]) # creates a numpy array of all the weights
 
     # use the learned weights and bias to make predictions
     def predict(self, X):
