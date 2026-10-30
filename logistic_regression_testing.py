@@ -105,7 +105,8 @@ assert len(model.w) == 3
 
 
 # Unit tests for each piece of the LogisticRegression class
-# Each test uses small, hand-picked numbers so the correct answer can be worked out by hand
+# Each test uses hand-picked numbers so the correct answer can be worked out by hand
+# Learned about this from: https://www.geeksforgeeks.org/software-testing/unit-testing-software-testing/
 print("\nUnit Tests")
 
 # _weight_name should build the name used to look up each weight in the values dictionary
@@ -140,6 +141,8 @@ X = np.array([[1.0], [2.0], [3.0]])
 y = np.array([0, 1, 1])
 b, weights, values = model._init_parameters(1)
 cost = model._build_cost(X, y, b, weights)
+# np.isclose checks if two floating-point arrays or numbers are close in value
+# Learned to use this from: https://www.geeksforgeeks.org/python/python-math-library-isclose-method/
 assert np.isclose(cost.evaluate(values), np.log(2))
 print("_build_cost (all zeros) passed")
 
@@ -222,6 +225,7 @@ print("All unit tests passed")
 
 # Compare my implementation with scikit-learn's LogisticRegression
 # import it under a different name so it doesn't replace my LogisticRegression class
+# Learned to use it from: https://scikit-learn.org/stable/modules/generated/sklearn.linear_model.LogisticRegression.html
 from sklearn.linear_model import LogisticRegression as SklearnLogisticRegression
 
 print("\nComparison with scikit-learn")
@@ -265,7 +269,6 @@ X_plot = np.linspace(0, 4, 200).reshape(200, 1)
 my_probabilities = 1 / (1 + np.exp(-(X_plot @ my_model.w + my_model.b)))
 
 # predict_proba returns one column per class, column 1 is the probability of class 1
-# Learned this from: https://scikit-learn.org/stable/modules/generated/sklearn.linear_model.LogisticRegression.html
 sk_probabilities = sk_model.predict_proba(X_plot)[:, 1]
 
 plt.figure()

@@ -64,6 +64,43 @@ This process repeats for the specified number of iterations. The final parameter
 - scikit-learn (for evaluation)
 - `variable_class.py` (custom class)
 
+The exact package versions used are listed in `requirements.txt`.
+
+## Installation
+
+This project was developed and tested with Python 3.14.
+
+1. Clone the repository:
+
+```bash
+git clone https://github.com/avacaii/CSC561-Project-2.git
+cd CSC561-Project-2
+```
+
+2. (Optional) Create and activate a virtual environment so the packages are installed only for this project:
+
+```bash
+python3 -m venv venv
+source venv/bin/activate
+```
+
+On Windows, activate it with `venv\Scripts\activate` instead.
+
+3. Install the required packages:
+
+```bash
+pip install -r requirements.txt
+```
+
+4. Run the tests:
+
+```bash
+python3 logistic_regression_testing.py
+python3 variable_class_testing.py
+```
+
+`logistic_regression_testing.py` prints the test accuracies, the unit test results, and a comparison with scikit-learn, then opens the graphs.
+
 ## LogisticRegression Class
 
 ### Parameters
